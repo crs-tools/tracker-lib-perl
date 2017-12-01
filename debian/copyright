@@ -1,0 +1,32 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Source: https://github.com/crs-tools/tracker-lib-perl
+Upstream-Contact: https://crs.tools
+Upstream-Name: C3TT
+
+Files: C3TT/Client.pm
+Copyright: 2013, 2017 Peter Große <pegro@fem-net.de>
+License: Artistic or GPL-1+
+
+Files: C3TT/Executor.pm
+Copyright: 2017 Matthias Hunstock <atze@fem.tu-ilmenau.de>
+License: Artistic or GPL-1+
+
+Files: debian/*
+Copyright: 2017, Matthias Hunstock <atze@fem.tu-ilmenau.de>
+License: Artistic or GPL-1+
+
+License: Artistic
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the Artistic License, which comes with Perl.
+ .
+ On Debian systems, the complete text of the Artistic License can be
+ found in `/usr/share/common-licenses/Artistic'.
+
+License: GPL-1+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 1, or (at your option)
+ any later version.
+ .
+ On Debian systems, the complete text of version 1 of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-1'.
