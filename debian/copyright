@@ -1,13 +1,13 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Source: https://github.com/crs-tools/tracker-lib-perl
 Upstream-Contact: https://crs.tools
-Upstream-Name: C3TT
+Upstream-Name: tracker-lib-perl
 
-Files: C3TT/Client.pm
+Files: CRS/Tracker/Client.pm
 Copyright: 2013, 2017 Peter Große <pegro@fem-net.de>
 License: Artistic or GPL-1+
 
-Files: C3TT/Executor.pm
+Files: CRS/Executor.pm
 Copyright: 2017 Matthias Hunstock <atze@fem.tu-ilmenau.de>
 License: Artistic or GPL-1+
 
