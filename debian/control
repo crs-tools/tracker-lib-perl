@@ -9,7 +9,7 @@ Homepage: https://crs.tools
 
 Package: libc3tt-perl
 Architecture: all
-Depends: ${misc:Depends}, ${perl:Depends}
+Depends: ${misc:Depends}, ${perl:Depends}, libfile-which-perl, libxml-simple-perl, libencode-locale-perl, libxml-rpc-fast-perl, liburi-perl, libio-socket-ssl-perl
 Description: Client for interacting with the C3 Ticket Tracker via XML-RPC
  C3TT::Client is a library for interacting with the C3TT via XML-RPC with
  automatic encoding of all arguments
