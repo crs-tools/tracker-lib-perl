@@ -1,3 +1,7 @@
 CRS/Executor.pm
+CRS/Fuse.pm
+CRS/Auphonic.pm
+CRS/Fuse/TS.pm
+CRS/Fuse/VDV.pm
 CRS/Tracker/Client.pm
 Makefile.PL

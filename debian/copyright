@@ -3,12 +3,12 @@ Source: https://github.com/crs-tools/tracker-lib-perl
 Upstream-Contact: https://crs.tools
 Upstream-Name: tracker-lib-perl
 
-Files: CRS/Tracker/Client.pm
-Copyright: 2013, 2017 Peter Große <pegro@fem-net.de>
+Files: CRS/*
+Copyright: 2017 Matthias Hunstock <atze@fem.tu-ilmenau.de>
 License: Artistic or GPL-1+
 
-Files: CRS/Executor.pm
-Copyright: 2017 Matthias Hunstock <atze@fem.tu-ilmenau.de>
+Files: CRS/Tracker/Client.pm
+Copyright: 2013, 2017 Peter Große <pegro@fem-net.de>
 License: Artistic or GPL-1+
 
 Files: debian/*
