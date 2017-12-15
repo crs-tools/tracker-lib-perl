@@ -92,8 +92,7 @@ sub doFuseMount {
 	print "creating mount path \"$p\"\n" if defined($self->{debug});
 	my $log = join "\n", qx ( mkdir -p "$p" 2>&1 );
 	my $fusecmd = " ".$self->{binpath}."/fuse-ts p=\"$prefix-\" c=\"$capdir\" st=\"$starttime\" numfiles=$files totalframes=$frames ";
-	$fusecmd .= " winpath=\"" . $self->{'Processing.Path.FuseWindowsPrefix'} . '" ' if (defined($self->{'Processing.Path.FuseWindowsPrefix'}));
-	$fusecmd .= " stripslashes=" . $self->{'Processing.Path.FuseWindowsStripSlashes'} . ' ' if (defined($self->{'Processing.Path.FuseWindowsStripSlashes'}));
+	$fusecmd .= " fps=".$self->{fps} if (defined($self->{fps}) and $self->{fps} != 25);
 	$fusecmd .= " -oallow_other,use_ino \"$p\" ";
 
 	print "FUSE cmd: $fusecmd\n" if defined($self->{debug});
@@ -106,9 +105,10 @@ sub doFuseRepairMount {
 
 	print "doFuseRepairMount: $vid '$replacement'\n" if defined($self->{debug});
 	return 0 unless defined($replacement);
-	die "ERROR: no Processing.Path.Repair specified!\n" unless defined $self->{'Processing.Path.Repair'};
 
-	my $repairdir = $self->{'Processing.Path.Repair'};
+	my $repairdir = $self->{'paths'}->getPath('Repair');
+	die "ERROR: no Processing.Path.Repair specified!\n" unless defined $repairdir;
+
 	my $replacementpath = "$repairdir/$replacement";
 	return 0 unless -r $replacementpath;
 	print "replacing FUSE with repaired file $replacementpath*\n" if defined($self->{debug});
@@ -126,18 +126,39 @@ sub getCutmarks {
 	my $p = $self->getMountPath($vid);
 	print "getting mark IN of event $vid\n" if defined($self->{debug});
 	my $i = qx ( cat \"$p/inframe\" );
-	chop($i);
+	chomp($i);
 	print "getting mark OUT of event $vid\n" if defined($self->{debug});
 	my $o = qx ( cat \"$p/outframe\" );
-	chop($o);
+	chomp($o);
 	print "getting mark IN of event $vid\n" if defined($self->{debug});
 	my $it = qx ( cat \"$p/intime\" );
-	chop($it);
+	chomp($it);
 	print "getting mark OUT of event $vid\n" if defined($self->{debug});
 	my $ot = qx ( cat \"$p/outtime\" );
-	chop($ot);
+	chomp($ot);
 
 	return ($i, $o, $it, $ot);
 }
 
+sub setCutmarks {
+	my ($self, $in, $out, undef) = @_;
+	my $vid = $self->{'Fahrplan.ID'};
+
+	my $p = $self->getMountPath($vid);
+	my $infile = "$p/inframe";
+	my $outfile = "$p/outframe";
+
+	if (defined($in)) {
+		print "setting mark IN of event $vid to $in\n" if defined($self->{debug});
+		open(INFILE, '>', $infile) and
+			print INFILE $in and
+			close INFILE;
+	}
+	if (defined($out)) {
+		print "setting mark OUT of event $vid to $out\n" if defined($self->{debug});
+		open(OUTFILE, '>', $outfile) and
+			print OUTFILE $out and
+			close OUTFILE;
+	}
+}
 1;
