@@ -1,3 +1,12 @@
+libcrs-perl (0.5.1) unstable; urgency=low
+
+  * Executor: add support for expansion of ~ to home directory
+  * give fps value to fuse
+  * method to set cutmarks
+  * auto-guess commonly used paths
+
+ -- Matthias Hunstock <atze@fem.tu-ilmenau.de>  Fri, 15 Dec 2017 01:19:32 +0100
+
 libcrs-perl (0.5) unstable; urgency=low
 
   * Initial Release.
