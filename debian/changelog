@@ -1,8 +1,9 @@
 libcrs-perl (0.5.2) unstable; urgency=low
 
+  * enhancement: Fuse/TS.pm checks count of files before attempting fuse mount
   * bugfix: auto-guess commonly used paths matched on property names
 
- -- Matthias Hunstock <atze@fem.tu-ilmenau.de>  Thu, 28 Sep 2018 22:41:22 +0200
+ -- Matthias Hunstock <atze@fem.tu-ilmenau.de>  Wed, 19 Sep 2018 22:17:25 +0200
 
 libcrs-perl (0.5.1) unstable; urgency=low
 
