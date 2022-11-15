@@ -52,6 +52,7 @@ use charnames ':full';
 
 use File::Spec;
 use File::Which qw(which);
+use IPC::Run3;
 use XML::Simple qw(:strict);
 use Encode;
 
@@ -311,15 +312,9 @@ sub run_cmd {
 	$cmdencoding = 'UTF-8' unless defined($cmdencoding);
 	$cmd = encode($cmdencoding, $cmd);
 
-	my $handle;
-	open ($handle, '-|', $cmd . ' 2>&1') or $self->fatal ("Cannot execute command");
-	while (<$handle>) {
-		my $line = decode($cmdencoding, $_);
-		print $line;
-		chomp $line;
-		push @{$self->{output}}, $line;
-	}
-	close ($handle);
+	my $ret = run3($cmd, \undef, $self->{output}, $self->{errors},
+		{ binmode_stdout => 1, binmode_stderr => 1, append_stdout => 1, append_stderr => 1, return_if_system_error => 1}
+	);
 
 	# reset encoding layer
 	binmode STDOUT;
