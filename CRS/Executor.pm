@@ -76,6 +76,7 @@ sub new {
 	$self->{tmpfilemap} = {};
 	$self->{output} = [];
 	$self->{errors} = [];
+	push(@{$self->{errors}}, @{$self->{job}->{error}}) if defined($self->{job}->{error});
 
 	bless $self;
 	return $self;
@@ -131,6 +132,7 @@ sub load_job {
             'option',
             'task',
             'tasks',
+            'error',
         ],
         KeyAttr => ['id'],
     );
@@ -324,10 +326,28 @@ sub run_cmd {
 
 	# check return code
 	if ($?) {
-		$self->print ("Task exited with code $?");
+		$self->error("Task exited with code $?");
 		return 0;
 	}
 	return 1;
+}
+
+sub has_task_type {
+	my $self = shift;
+	my $type = shift;
+
+	return 0 unless defined($type);
+
+	my @tasks = ( ) ;
+	foreach(@{$self->{job}->{tasks}}) {
+		foreach(@{$_->{task}}) {
+			if ($_->{type} eq $type) {
+				return 1;
+			}
+		}
+	}
+
+	return 0;
 }
 
 sub task_loop {
@@ -344,6 +364,17 @@ sub task_loop {
 	my $successful = 1;
 	TASK: for (my $task_id = 0; $task_id < $num_tasks; ++$task_id) {
 
+		# check for error elements
+		if (defined($tasks[$task_id]->{error})) {
+			my @errors = @{$tasks[$task_id]->{error}};
+			if (scalar @errors > 0) {
+				foreach (@errors) {
+					$self->error($_);
+				}
+				$successful = 0;
+				last;
+			}
+		}
 		# parse XML and print cmd
 		my $cmd = $self->parse_cmd($tasks[$task_id]->{option});
 		$self->print ("now executing task " . ($task_id + 1) . " of $num_tasks");
@@ -414,22 +445,35 @@ sub printParsedCommands {
 	}
 
 	my $num_tasks = scalar @tasks;
+	my $return = '';
 	TASK: for (my $task_id = 0; $task_id < $num_tasks; ++$task_id) {
 
+		# check for error elements
+		if (defined($tasks[$task_id]->{error})) {
+			my @errors = @{$tasks[$task_id]->{error}};
+			if (scalar @errors > 0) {
+				$self->error("Jobfile contains errors:\n" . join("\n", @errors) . "\n\n");
+			}
+		}
 		# parse XML and print cmd
 		my $cmd = $self->parse_cmd($tasks[$task_id]->{option});
-		$self->print ("task " . ($task_id + 1) . " (type ". $tasks[$task_id]->{type} .") of $num_tasks has command:\n\n$cmd\n\n");
+		my $cmdinfo = "task " . ($task_id + 1) . " (type ". $tasks[$task_id]->{type} .") of $num_tasks has command:\n\n$cmd\n\n";
+		$self->print ($cmdinfo);
+		$return .= "$cmdinfo\n\n";
 	}
 	$self->{bogusmode} = 0;
+	return $return;
 }
 
 sub getOutput {
 	my $self = shift;
+	chomp (@{$self->{output}});
 	return @{$self->{output}};
 }
 
 sub getErrors {
 	my $self = shift;
+	chomp (@{$self->{errors}});
 	return @{$self->{errors}};
 }
 
@@ -520,6 +564,13 @@ behaviour by including an attribute quoted="no" in the option element.
           </tasks>
 
         </job>
+
+=head2 Error handling
+
+If a task element contains any number of error elements, the task is considered
+failed (while constructing the jobfile, before actually executing it). The executor
+will collect those errors and return them via GetErrors(), while refusing to execute
+the jobfile. This allows to transport errors from jobfile construction to the executor.
 
 =cut
 1;
